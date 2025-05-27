@@ -60,18 +60,21 @@ def tokenize_regex(text):
         return re.findall(r"\b\w[\w']*\b", text.lower())
     return []
 
-def remove_stopwords(text):
+def remove_stopwords(tokens):
     stop_words = set(stopwords.words("english"))
-    if isinstance(text, str):
-        tokens = tokenize_regex(text)
-        filtered = [t for t in tokens if t not in stop_words]
-        return filtered
+    return [t for t in tokens if t not in stop_words]
 
 def split_sentence(text):
     if isinstance(text, str):
         return sent_tokenize(text)
     return []
 
+def remove_punctuation(text):
+    if isinstance(text, str):
+        punctuation_to_remove = string.punctuation.replace("'", "")
+        return text.translate(str.maketrans("", "", punctuation_to_remove))
+    return []
+
 # cl_data = lowercase_text_fields(data)
 # tokens = tokenize_regex(cl_data[1]["Text"])
-print(split_sentence(data[1]["Text"]))
+# print(remove_punctuation(data[1]["Text"]))
