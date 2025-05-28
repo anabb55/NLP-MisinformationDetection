@@ -6,7 +6,7 @@ from spellchecker import SpellChecker
 import language_tool_python 
 from collections import defaultdict
 
-df = pd.read_json("without_assessment.jsonl", lines=True)
+df = pd.read_json("without_assessment_updated.jsonl", lines=True)
 articles = df["Text"].to_list()
 titles = df["Title"].to_list()
 data = df[["Title", "Text"]].to_dict(orient="records")
@@ -144,7 +144,7 @@ def analyze_text_errors(text):
 # for article in data:
 #    print(analyze_text_errors(article["Text"]))
    
-print(analyze_text_errors(remove_named_entities(data[1]["Text"])))
+#print(analyze_text_errors(remove_named_entities(data[1]["Text"])))
 
 
 ###COMENTS: 

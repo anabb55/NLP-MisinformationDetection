@@ -11,7 +11,7 @@ nltk.download("punkt")
 import string
 
 
-df = pd.read_json("without_assessment.jsonl", lines=True)
+df = pd.read_json("without_assessment_updated.jsonl", lines=True)
 articles = df["Text"].to_list()
 titles = df["Title"].to_list()
 data = df[["Title", "Text"]].to_dict(orient="records")
