@@ -1,4 +1,4 @@
-from text_analysis import lowercase_text_fields, remove_named_entities, pos_tagging, tokenize_regex, remove_stopwords, emotion_analysis, remove_punctuation, analyze_text_errors
+from text_analysis import lowercase_text_fields, remove_named_entities, pos_tagging, tokenize_regex, remove_stopwords, emotion_analysis, remove_punctuation, analyze_text_errors, analyze_readability
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, ConfusionMatrixDisplay, classification_report
@@ -30,9 +30,12 @@ for article in data_lowercase:
     clean_text = " ".join(tokens_wo_sw)
     emotion_feats = emotion_analysis(clean_text)
 
-    # Text errors (really slow)
-    #ner_cleaned_text = remove_named_entities(text)
-    #spell_err, grammar_err = analyze_text_errors(ner_cleaned_text)
+    # Text errors
+    ner_cleaned_text = remove_named_entities(text)
+    spell_err = analyze_text_errors(ner_cleaned_text)
+
+    # Readability
+    reading_feats = analyze_readability(text)
 
     row = {
         "Title": title,
@@ -43,7 +46,12 @@ for article in data_lowercase:
         "pron_pct": pos_feats[4] if pos_feats else 0.0,
         "adj_noun_ratio": pos_feats[5] if pos_feats else 0.0,
         "adv_verb_ratio": pos_feats[6] if pos_feats else 0.0,
-        #"spelling_error_rate": spell_err,
+        "spelling_error_rate": spell_err,
+        "reading_ease": reading_feats[0] if reading_feats else 0.0,
+        "kincaid_grade": reading_feats[1] if reading_feats else 0.0,
+        "gunning_fog": reading_feats[2] if reading_feats else 0.0,
+        "smog": reading_feats[3] if reading_feats else 0.0,
+        "automated_readability": reading_feats[4] if reading_feats else 0.0,
         #"grammar_error_rate": grammar_err
     }
 
@@ -100,10 +108,10 @@ def evaluation(model, X_train, y_train, X_test, y_test, train=True):
 param_distributions = {
     'n_estimators': [100, 200, 300, 400, 500],
     'max_features': [None, 'sqrt', 'log2'],
-    'max_depth': [None, 10, 20, 30, 40, 50],
+    'max_depth': [None, 5, 10, 15, 20],
     'min_samples_split': [2, 5, 10, 15],
-    'min_samples_leaf': [1, 2, 4, 6],
-    'bootstrap': [True, False]
+    'min_samples_leaf': [2, 5, 10],
+    'bootstrap': [True]
 }
 
 
