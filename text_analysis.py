@@ -6,6 +6,8 @@ from spellchecker import SpellChecker
 import language_tool_python 
 from collections import defaultdict
 import textstat
+import re
+
 
 df = pd.read_json("without_assessment_updated.jsonl", lines=True)
 articles = df["Text"].to_list()
@@ -141,6 +143,26 @@ def analyze_readability(text):
     return reading_ease, kincaid_grade, gunning_fog, smog, automated_readability
 
 
+def entity_count(text, entities):
+    return sum(
+        1 for entity in entities
+        if re.search(rf'\b{re.escape(entity)}\b', text, re.IGNORECASE)
+    )
+    
+
+def fact_match_token_overlap(text, facts, threshold=0.7):
+    text_tokens = set(tokenize_regex(text))
+    match_count = 0
+
+    for fact in facts:
+        fact_tokens = set(tokenize_regex(fact))
+        if not fact_tokens:
+            continue
+        overlap = fact_tokens.intersection(text_tokens)
+        if len(overlap) / len(fact_tokens) >= threshold:
+            match_count += 1
+
+    return match_count
 
 
 
