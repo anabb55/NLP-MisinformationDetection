@@ -5,8 +5,11 @@ from preprocessing import lowercase_text_fields, tokenize_regex, remove_stopword
 from spellchecker import SpellChecker
 import language_tool_python 
 from collections import defaultdict
+import textstat
+import re
 
-df = pd.read_json("without_assessment.jsonl", lines=True)
+
+df = pd.read_json("without_assessment_updated.jsonl", lines=True)
 articles = df["Text"].to_list()
 titles = df["Title"].to_list()
 data = df[["Title", "Text"]].to_dict(orient="records")
@@ -102,17 +105,17 @@ def analyze_text_errors(text):
     """
 
     if not isinstance(text, str):
-        return 0.0, 0.0
+        return 0.0 #, 0.0
     
     spell = SpellChecker()
     words = text.lower().split()
     misspelled = spell.unknown(words)
     spelling_error_rate = len(misspelled) / len(words) if words else 0.0
 
-    tool = language_tool_python.LanguageTool('en-US')
-    matches = tool.check(text)
-    num_sentences = max(text.count('.'), 1)
-    grammar_error_rate = len(matches) / num_sentences
+    # tool = language_tool_python.LanguageTool('en-US')
+    # matches = tool.check(text)
+    # num_sentences = max(text.count('.'), 1)
+    # grammar_error_rate = len(matches) / num_sentences
 
     #Test for identifying grammar errors
     # print("\n--- Grammar Issues ---")
@@ -124,8 +127,42 @@ def analyze_text_errors(text):
     #     print(f"  ↳ Message: {match.message}")
     #     print(f"  ↳ Suggested Correction(s): {match.replacements}\n")
 
-    return round(spelling_error_rate, 3), round(grammar_error_rate, 3)
+    return round(spelling_error_rate, 3) #, round(grammar_error_rate, 3)
 
+
+def analyze_readability(text):
+    if not isinstance(text, str):
+        return [0.0] * 5
+
+    reading_ease = textstat.flesch_reading_ease(text)
+    kincaid_grade = textstat.flesch_kincaid_grade(text)
+    gunning_fog = textstat.gunning_fog(text)
+    smog = textstat.smog_index(text)
+    automated_readability = textstat.automated_readability_index(text)
+
+    return reading_ease, kincaid_grade, gunning_fog, smog, automated_readability
+
+
+def entity_count(text, entities):
+    return sum(
+        1 for entity in entities
+        if re.search(rf'\b{re.escape(entity)}\b', text, re.IGNORECASE)
+    )
+    
+
+def fact_match_token_overlap(text, facts, threshold=0.7):
+    text_tokens = set(tokenize_regex(text))
+    match_count = 0
+
+    for fact in facts:
+        fact_tokens = set(tokenize_regex(fact))
+        if not fact_tokens:
+            continue
+        overlap = fact_tokens.intersection(text_tokens)
+        if len(overlap) / len(fact_tokens) >= threshold:
+            match_count += 1
+
+    return match_count
 
 
 
@@ -144,7 +181,7 @@ def analyze_text_errors(text):
 # for article in data:
 #    print(analyze_text_errors(article["Text"]))
    
-print(analyze_text_errors(remove_named_entities(data[1]["Text"])))
+#print(analyze_text_errors(remove_named_entities(data[1]["Text"])))
 
 
 ###COMENTS: 
