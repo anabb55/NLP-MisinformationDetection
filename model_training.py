@@ -1,4 +1,5 @@
-from text_analysis import lowercase_text_fields, remove_named_entities, pos_tagging, tokenize_regex, remove_stopwords, emotion_analysis, remove_punctuation, analyze_text_errors, analyze_readability
+from text_analysis import lowercase_text_fields, remove_named_entities, pos_tagging, tokenize_regex, remove_stopwords, emotion_analysis, remove_punctuation, analyze_text_errors, analyze_readability, entity_count, fact_match_token_overlap
+from knowledge_base import climate_kb
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, ConfusionMatrixDisplay, classification_report
@@ -36,6 +37,11 @@ for article in data_lowercase:
 
     # Readability
     reading_feats = analyze_readability(text)
+    
+    # Entity count
+    entity_counter = entity_count(text, climate_kb["entities"])
+    fact_match_count = fact_match_token_overlap(text, climate_kb["facts"])
+
 
     row = {
         "Title": title,
@@ -52,6 +58,8 @@ for article in data_lowercase:
         "gunning_fog": reading_feats[2] if reading_feats else 0.0,
         "smog": reading_feats[3] if reading_feats else 0.0,
         "automated_readability": reading_feats[4] if reading_feats else 0.0,
+        "entity_count": entity_counter,
+        "facts_count": fact_match_count
         #"grammar_error_rate": grammar_err
     }
 
