@@ -33,11 +33,6 @@ def clean_text(text: str) -> str:
     return text.strip()
 
 
-# doc = load_pdf_file("data\SRCCL_SPM.pdf")
-# text = clean_text(doc)
-# print(text)
-
-
 def chunk_text(text, max_sentences=3) ->List[str]:
     sentences = sent_tokenize(text)
     chunks = []

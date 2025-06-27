@@ -99,35 +99,15 @@ def remove_named_entities(text):
 
 
 def analyze_text_errors(text):
-    """
-    Calculates spelling error rate and grammar error rate for a given text
-
-    """
-
     if not isinstance(text, str):
-        return 0.0 #, 0.0
+        return 0.0
     
     spell = SpellChecker()
     words = text.lower().split()
     misspelled = spell.unknown(words)
     spelling_error_rate = len(misspelled) / len(words) if words else 0.0
 
-    # tool = language_tool_python.LanguageTool('en-US')
-    # matches = tool.check(text)
-    # num_sentences = max(text.count('.'), 1)
-    # grammar_error_rate = len(matches) / num_sentences
-
-    #Test for identifying grammar errors
-    # print("\n--- Grammar Issues ---")
-    # for match in matches:
-    #     start = match.offset
-    #     end = match.offset + match.errorLength
-    #     error_snippet = text[start:end]
-    #     print(f"• Issue at position [{start}:{end}] → '{error_snippet}'")
-    #     print(f"  ↳ Message: {match.message}")
-    #     print(f"  ↳ Suggested Correction(s): {match.replacements}\n")
-
-    return round(spelling_error_rate, 3) #, round(grammar_error_rate, 3)
+    return round(spelling_error_rate, 3)
 
 
 def analyze_readability(text):
@@ -165,29 +145,10 @@ def fact_match_token_overlap(text, facts, threshold=0.7):
     return match_count
 
 
-
-##TEST - this should be in another file, but this is just test
-# original_text = data[100]["Text"]
-# raw_scores = emotion_analysis(original_text)
-
-# data_clean = lowercase_text_fields(data)
-# tokens = tokenize_regex(data_clean[100]["Text"])
-# tokens_without_sw = remove_stopwords(tokens)
-# data_clean_text = " ".join(tokens_without_sw)
-
-# print("Raw", raw_scores)
-# print(f"Preprocessed: {emotion_analysis(data_clean_text)}")
-
-# for article in data:
-#    print(analyze_text_errors(article["Text"]))
-   
-#print(analyze_text_errors(remove_named_entities(data[1]["Text"])))
-
-
 ###COMENTS: 
 # 1. Applying lowercasing before emotion_analysis doesn't change the output
 # 2. After tokenization text will look like 'word' 'word'... but emotion_analysis requires string, so it is necessary to join tokens
 # 3. Function tokenize_regex also removes punctuation
 # 4. Function remove_stopwords has list of tokens as input
-# 5. After all this preprocessing steps (lowercasing, tokenizing and removing stopwords) the result is better(got higher values)
+# 5. After all this preprocessing steps (lowercasing, tokenizing and removing stopwords) the result is better (got higher values)
 # 6. It's really important to remove names of organizations, perosnal names ... before using analyze_text_error because they cause a lot of grammatical errors

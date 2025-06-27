@@ -18,10 +18,6 @@ data = df[["Title", "Text"]].to_dict(orient="records")
 
 
 def lowercase_text_fields(data):
-    """
-    Lowercase the "Title" and "Text" fields of each dictionary in the list"
-
-    """
     lowercased_data = []
     for i in data:
         def clean(text):
@@ -44,8 +40,6 @@ def lowercase_text_fields(data):
     return lowercased_data
 
 
-
-
 def tokenize(text):
     if isinstance(text, str):
         tokens = word_tokenize(text)
@@ -54,7 +48,6 @@ def tokenize(text):
     return []
 
 
-##maybe we also can include hyphenated words (self-esteem)??
 def tokenize_regex(text):
     if isinstance(text, str):
         return re.findall(r"\b\w[\w']*\b", text.lower())
@@ -74,7 +67,3 @@ def remove_punctuation(text):
         punctuation_to_remove = string.punctuation.replace("'", "")
         return text.translate(str.maketrans("", "", punctuation_to_remove))
     return []
-
-# cl_data = lowercase_text_fields(data)
-# tokens = tokenize_regex(cl_data[1]["Text"])
-# print(remove_punctuation(data[1]["Text"]))
