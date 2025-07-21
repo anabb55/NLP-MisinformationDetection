@@ -57,12 +57,10 @@ def compute_metrics(eval_pred):
 def get_training_args(output_dir = "./results"):
     return TrainingArguments(
         output_dir = output_dir,
-        eval_strategy="steps",
-        save_strategy="steps",
-        save_steps=100,
-        logging_strategy="steps",
-        logging_steps=20,
-        num_train_epochs=30,
+        eval_strategy="epoch",
+        save_strategy="epoch", 
+        logging_strategy="epoch",
+        num_train_epochs=10,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
         load_best_model_at_end=True,
