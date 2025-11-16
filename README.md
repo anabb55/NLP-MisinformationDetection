@@ -33,7 +33,11 @@ We experimented with:
   - Random Forest (with and without simple knowledge base)
 
 ### Stage 3: Retrieval-Augmented Generation (RAG)
-- Collected scientific documents (e.g., IPCC reports)
-- Chunked and vectorized documents using sentence embeddings
-- Stored vectors in FAISS for semantic retrieval
-- Used GPT-2 to generate classification based on retrieved context
+This section describes the most advanced method used in this project: a **Retrieval-Augmented Classification** pipeline that combines:
+
+- **Fine-tuned GPT-2** for text classification  
+- **SentenceTransformer embeddings** for semantic understanding  
+- **FAISS vector search** for fast retrieval of scientific knowledge  
+- A custom **RAG-style prompt engineering** workflow  
+
+This hybrid method allows the model to evaluate climate news in the context of **verified scientific evidence**, leading to more accurate and robust classification.
