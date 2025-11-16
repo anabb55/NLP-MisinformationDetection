@@ -41,3 +41,6 @@ This section describes the most advanced method used in this project: a **Retrie
 - A custom **RAG-style prompt engineering** workflow  
 
 This hybrid method allows the model to evaluate climate news in the context of **verified scientific evidence**, leading to more accurate and robust classification.
+
+<img width="975" height="511" alt="image" src="https://github.com/user-attachments/assets/482e6976-188d-4719-8804-b2ce7604c978" />
+
